@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
       <h1 className={cn("text-red-500", isRed === true && "bg-yellow-500")}>
         Generate Invoice
       </h1>
+      <Button>Click Me!</Button>
     </div>
   );
 }
