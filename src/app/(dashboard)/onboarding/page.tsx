@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,9 +16,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { currencyOptions } from "@/lib/utils";
+import { onboardingSchema } from "@/lib/zodSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
 
 export default function OnboardingPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof onboardingSchema>>({
+    resolver: zodResolver(onboardingSchema),
+    defaultValues: {
+      currency: "USD",
+    },
+  });
   return (
     <div className="flex justify-center items-center flex-col min-h-dvh h-dvh overflow-auto relative p-4">
       <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(100%_50%_at_50%_0%,rgba(140,0,255,0.13)_0,rgba(140,0,255,0)_50%,rgba(140,0,255,0)_100%)]"></div>
