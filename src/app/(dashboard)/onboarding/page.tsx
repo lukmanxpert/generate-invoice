@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -18,6 +19,7 @@ import {
 import { currencyOptions } from "@/lib/utils";
 import { onboardingSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -33,9 +35,24 @@ export default function OnboardingPage() {
       currency: "USD",
     },
   });
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const onSubmit = () => {
-
+  const onSubmit = async (data: z.infer<typeof onboardingSchema>) => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/users", {
+        method: "put",
+        body: JSON.stringify(data),
+      });
+      // const responseData = await response.json();
+      if (response.status === 200) {
+        return router.push("/dashboard");
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="flex justify-center items-center flex-col min-h-dvh h-dvh overflow-auto relative p-4">
@@ -49,12 +66,13 @@ export default function OnboardingPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={()=>handleSubmit(onSubmit)} className="grid gap-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
             <div className=" grid gap-2">
               <Label>First Name</Label>
-              <input
+              <Input
                 type="text"
                 placeholder="Joe"
+                disabled={loading}
                 {...register("firstName", { required: true })}
               />
               {errors.firstName && (
@@ -65,11 +83,21 @@ export default function OnboardingPage() {
             </div>
             <div className=" grid gap-2">
               <Label>Last Name</Label>
-              <input type="text" name="" id="" placeholder="Due" />
+              <Input
+                type="text"
+                placeholder="Due"
+                disabled={loading}
+                {...register("lastName", { required: true })}
+              />
+              {errors.lastName && (
+                <p className="text-xs text-red-500">
+                  {errors.lastName.message}
+                </p>
+              )}
             </div>
             <div className="grid gap-2">
               <Label>Select Currency</Label>
-              <Select>
+              <Select defaultValue="USD" {...register("currency")}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Currency" />
                 </SelectTrigger>
@@ -86,7 +114,9 @@ export default function OnboardingPage() {
                 </SelectContent>
               </Select>
             </div>
-            <Button>Finish Onboarding</Button>
+            <Button className="cursor-pointer" disabled={loading}>
+              {loading ? "Please wait..." : "Finish Onboarding"}
+            </Button>
           </form>
         </CardContent>
       </Card>
