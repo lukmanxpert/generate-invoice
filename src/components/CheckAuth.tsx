@@ -15,7 +15,15 @@ export default async function ProtectedPage() {
 export async function UnProtectedPage() {
   const session = await auth();
   if (session) {
-    redirect("/dashboard");
+    if (
+      !session.user.firstName ||
+      !session.user.lastName ||
+      !session.user.currency
+    ) {
+      redirect("/onboarding");
+    } else {
+      redirect("/dashboard");
+    }
   }
-  return <></>
+  return <></>;
 }
