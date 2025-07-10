@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import SubmitButton from "@/components/SubmitButton";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/auth";
 import React from "react";
 
-export default function LoginPage() {
+export default async function LoginPage() {
   return (
     <Card className="max-w-sm min-w-xs lg:min-w-sm">
       <CardHeader>
@@ -37,7 +37,7 @@ export default function LoginPage() {
               name="email"
             ></Input>
           </div>
-          <Button className="w-full">Login</Button>
+          <SubmitButton title="Login" />
         </form>
       </CardContent>
     </Card>

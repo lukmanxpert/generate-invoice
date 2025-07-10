@@ -10,4 +10,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       from: "Generate Invoice <onboarding@resend.dev>",
     }),
   ],
+  pages: {
+    error: "/login",
+    verifyRequest: "/verify-email",
+    signIn: "/login"
+  }
 });
