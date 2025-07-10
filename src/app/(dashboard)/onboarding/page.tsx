@@ -34,6 +34,9 @@ export default function OnboardingPage() {
     },
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const onSubmit = () => {
+
+  };
   return (
     <div className="flex justify-center items-center flex-col min-h-dvh h-dvh overflow-auto relative p-4">
       <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(100%_50%_at_50%_0%,rgba(140,0,255,0.13)_0,rgba(140,0,255,0)_50%,rgba(140,0,255,0)_100%)]"></div>
@@ -46,7 +49,7 @@ export default function OnboardingPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="grid gap-4">
+          <form onSubmit={()=>handleSubmit(onSubmit)} className="grid gap-4">
             <div className=" grid gap-2">
               <Label>First Name</Label>
               <input
@@ -55,7 +58,9 @@ export default function OnboardingPage() {
                 {...register("firstName", { required: true })}
               />
               {errors.firstName && (
-                <p className="text-xs text-red-500">{errors.firstName.message}</p>
+                <p className="text-xs text-red-500">
+                  {errors.firstName.message}
+                </p>
               )}
             </div>
             <div className=" grid gap-2">
