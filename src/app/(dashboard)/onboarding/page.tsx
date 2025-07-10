@@ -18,7 +18,7 @@ import {
 import { currencyOptions } from "@/lib/utils";
 import { onboardingSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -33,6 +33,7 @@ export default function OnboardingPage() {
       currency: "USD",
     },
   });
+  const [loading, setLoading] = useState<boolean>(false);
   return (
     <div className="flex justify-center items-center flex-col min-h-dvh h-dvh overflow-auto relative p-4">
       <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(100%_50%_at_50%_0%,rgba(140,0,255,0.13)_0,rgba(140,0,255,0)_50%,rgba(140,0,255,0)_100%)]"></div>
@@ -48,7 +49,14 @@ export default function OnboardingPage() {
           <form className="grid gap-4">
             <div className=" grid gap-2">
               <Label>First Name</Label>
-              <input type="text" name="" id="" placeholder="Joe" />
+              <input
+                type="text"
+                placeholder="Joe"
+                {...register("firstName", { required: true })}
+              />
+              {errors.firstName && (
+                <p className="text-xs text-red-500">{errors.firstName.message}</p>
+              )}
             </div>
             <div className=" grid gap-2">
               <Label>Last Name</Label>
