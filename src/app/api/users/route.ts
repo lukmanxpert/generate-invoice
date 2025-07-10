@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { auth } from "@/lib/auth";
+import { connectDB } from "@/lib/connectDB";
 import userModel from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,6 +19,8 @@ export async function PUT(req: NextRequest) {
       );
     }
     // function connect to db
+    await connectDB();
+
     const userDetails = await userModel.findByIdAndUpdate(session.user?.id, {
       firstName,
       lastName,
