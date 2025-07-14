@@ -15,7 +15,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({children}: {children: React.ReactNode}) {
   const pathname = usePathname();
   return (
     <Sidebar>
@@ -52,12 +52,16 @@ export default function DashboardSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href={"/settings"} className={cn(pathname === "/settings" && "bg-white")}>
+              <Link
+                href={"/settings"}
+                className={cn(pathname === "/settings" && "bg-white")}
+              >
                 <span>Settings</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        {children}
       </SidebarFooter>
     </Sidebar>
   );

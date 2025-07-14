@@ -2,6 +2,7 @@ import ProtectedPage from "@/components/CheckAuth";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import React from "react";
 import DashboardSidebar from "./_components/DashboardSidebar";
+import UserProfileDropdown from "./_components/UserProfileDropdown";
 
 export default function DashboardLayout({
   children,
@@ -10,7 +11,9 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <DashboardSidebar />
+      <DashboardSidebar>
+        <UserProfileDropdown />
+      </DashboardSidebar>
       <main>
         {children}
         <ProtectedPage />
