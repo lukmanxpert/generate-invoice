@@ -2,9 +2,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { auth } from "@/lib/auth";
+import { auth, signOut } from "@/lib/auth";
 import getAvatarName from "@/lib/getAvatarName";
 import { ChevronDown } from "lucide-react";
 import React from "react";
@@ -25,15 +28,24 @@ export default async function UserProfileDropdown() {
             </AvatarFallback>
           </Avatar>
           <div>
-            <p>
+            <p className="text-ellipsis line-clamp-1 font-medium">
               <span>{session?.user.firstName}</span>{" "}
               <span>{session?.user.lastName}</span>
             </p>
           </div>
-          <ChevronDown />
+          <ChevronDown className="transition-all ml-auto" />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>Pop Over</DropdownMenuContent>
+      <DropdownMenuContent className="w-full min-w-[250px]">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={async()=>{
+          "use server"
+          await signOut()
+        }} className="bg-red-50 text-red-500 hover:bg-red-100 font-medium cursor-pointer">
+          Logout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }
