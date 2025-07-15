@@ -11,6 +11,7 @@ import { auth, signOut } from "@/lib/auth";
 import getAvatarName from "@/lib/getAvatarName";
 import { ChevronDown } from "lucide-react";
 import React from "react";
+import UserProfile from "./UserProfile";
 
 export default async function UserProfileDropdown() {
   const session = await auth();
@@ -39,10 +40,15 @@ export default async function UserProfileDropdown() {
       <DropdownMenuContent className="w-full min-w-[250px]">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={async()=>{
-          "use server"
-          await signOut()
-        }} className="bg-red-50 text-red-500 hover:bg-red-100 font-medium cursor-pointer">
+        {/* user profile */}
+        <UserProfile />
+        <DropdownMenuItem
+          onClick={async () => {
+            "use server";
+            await signOut();
+          }}
+          className="bg-red-50 text-red-500 hover:bg-red-100 font-medium cursor-pointer"
+        >
           Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
