@@ -13,7 +13,15 @@ import { ChevronDown } from "lucide-react";
 import React from "react";
 import UserProfile from "./UserProfile";
 
-export default async function UserProfileDropdown() {
+interface IUserProfileDropdown {
+  isFullName: boolean;
+  isArrowUp: boolean;
+}
+
+export default async function UserProfileDropdown({
+  isFullName,
+  isArrowUp,
+}: IUserProfileDropdown) {
   const session = await auth();
   return (
     <DropdownMenu>
@@ -28,13 +36,15 @@ export default async function UserProfileDropdown() {
               )}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <p className="text-ellipsis line-clamp-1 font-medium">
-              <span>{session?.user.firstName}</span>{" "}
-              <span>{session?.user.lastName}</span>
-            </p>
-          </div>
-          <ChevronDown className="transition-all ml-auto" />
+          {isFullName && (
+            <div>
+              <p className="text-ellipsis line-clamp-1 font-medium">
+                <span>{session?.user.firstName}</span>{" "}
+                <span>{session?.user.lastName}</span>
+              </p>
+            </div>
+          )}
+          {isArrowUp && <ChevronDown className="transition-all ml-auto" />}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full min-w-[250px]">

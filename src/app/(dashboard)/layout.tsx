@@ -3,6 +3,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import React from "react";
 import DashboardSidebar from "./_components/DashboardSidebar";
 import UserProfileDropdown from "./_components/UserProfileDropdown";
+import DashboardHeader from "./_components/DashboardHeader";
 
 export default function DashboardLayout({
   children,
@@ -12,9 +13,10 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <DashboardSidebar>
-        <UserProfileDropdown />
+        <UserProfileDropdown isFullName isArrowUp />
       </DashboardSidebar>
-      <main>
+      <main className="w-full">
+        <DashboardHeader />
         {children}
         <ProtectedPage />
       </main>
