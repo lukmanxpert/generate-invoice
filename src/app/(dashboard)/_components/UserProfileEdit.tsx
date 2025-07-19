@@ -37,7 +37,9 @@ export default function UserProfileEdit({
   } = useForm<z.infer<typeof onboardingSchema>>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      currency: "USD",
+      currency: currency,
+      firstName: firstName,
+      lastName: lastName,
     },
   });
   const router = useRouter();
@@ -51,7 +53,7 @@ export default function UserProfileEdit({
       });
       // const responseData = await response.json();
       if (response.status === 200) {
-        return router.push("/dashboard");
+        router.refresh();
       }
     } catch (error) {
       console.log("error :>> ", error);
@@ -85,6 +87,16 @@ export default function UserProfileEdit({
           <p className="text-xs text-red-500">{errors.lastName.message}</p>
         )}
       </div>
+      <div className=" grid gap-2">
+        <Label>Email: </Label>
+        <Input
+          type="email"
+          placeholder="john.doe@gmail.com"
+          value={email ?? ""}
+          required
+          disabled={true}
+        />
+      </div>
       <div className="grid gap-2">
         <Label>Select Currency</Label>
         <Select defaultValue="USD" {...register("currency")}>
@@ -103,7 +115,7 @@ export default function UserProfileEdit({
         </Select>
       </div>
       <Button className="cursor-pointer" disabled={loading}>
-        {loading ? "Please wait..." : "Finish Onboarding"}
+        {loading ? "Please wait..." : "Update Profile"}
       </Button>
     </form>
   );
