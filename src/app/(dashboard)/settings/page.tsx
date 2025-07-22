@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import imageBase64 from "@/lib/imageBase64";
 import Image from "next/image";
 import React, { useState } from "react";
 
@@ -31,11 +32,16 @@ export default function SettingsPage() {
   };
 
   // handle onchange signature image
-  const handleSignatureImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSignatureImage = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const files = event.target.files;
     if (!files || files.length < 0) return;
     const file = files[0];
+
     // image to base64
+    const image = await imageBase64(file);
+    setSignature((prev) => ({ ...prev, image: image }));
   };
 
   return (
@@ -53,11 +59,11 @@ export default function SettingsPage() {
             <form className="w-full grid gap-2">
               <Input type="file" className="max-w-sm w-full" />
               <div className="w-full max-w-sm">
-                {logo ? (
+                {signature.image ? (
                   <Image
                     className="aspect-square h-20 border-2 border-dotted max-h-20 object-scale-down"
-                    src={logo}
-                    alt="invoice logo"
+                    src={signature.image}
+                    alt="signature sign"
                     width={205}
                     height={96}
                   />

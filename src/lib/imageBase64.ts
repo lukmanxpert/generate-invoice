@@ -1,3 +1,9 @@
 export default async function imageBase64(image: File): Promise<string> {
-  return "";
+  const reader = new FileReader();
+  reader.readAsDataURL(image);
+  return new Promise((resolve, reject) => {
+    reader.onload = () => resolve(reader.result as string)
+    
+    reader.onerror = (error) => reject(error)
+  })
 }
