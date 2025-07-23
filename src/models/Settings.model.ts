@@ -6,9 +6,10 @@ interface ISignature {
 }
 
 interface ISettings {
-  _id: mongoose.Types.ObjectId;
-  invoiceLogo: string;
-  signature: ISignature;
+  _id?: mongoose.Types.ObjectId;
+  invoiceLogo?: string;
+  signature?: ISignature;
+  userId: mongoose.Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -27,6 +28,7 @@ const settingsSchema = new mongoose.Schema<ISettings>(
   {
     invoiceLogo: { type: String, default: null },
     signature: signatureSchema,
+    userId: { type: mongoose.Schema.ObjectId, ref: "users", required: true },
   },
   {
     timestamps: true,
