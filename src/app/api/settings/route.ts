@@ -57,3 +57,31 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// get
+export async function GET(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json(
+        {
+          message: "Unauthorize access",
+          error: true,
+          success: false,
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+    const getData = await settingsModel.findOne({ userId: session?.user.id });
+    return NextResponse.json({
+      message: "Success",
+      data: getData,
+    });
+  } catch (error: any) {
+    return NextResponse.json({
+      message: error?.message || error || "something went wrong",
+    });
+  }
+}
