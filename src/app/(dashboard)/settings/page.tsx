@@ -95,6 +95,26 @@ export default function SettingsPage() {
       setIsLoading(false);
     }
   };
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("/api/settings");
+      const responseData = await response.json();
+      if (response.status === 200) {
+        setLogo(responseData?.data?.invoiceLogo);
+        setSignatureData(
+          responseData?.data?.signature || { name: "", image: "" }
+        );
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div className="p-4">
       <div>
