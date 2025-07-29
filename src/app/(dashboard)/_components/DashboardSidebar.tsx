@@ -56,6 +56,7 @@ export default function DashboardSidebar({children}: {children: React.ReactNode}
                 href={"/settings"}
                 className={cn(pathname === "/settings" && "bg-white")}
               >
+                <BookAIcon />
                 <span>Settings</span>
               </Link>
             </SidebarMenuButton>
