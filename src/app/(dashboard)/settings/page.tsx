@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import imageBase64 from "@/lib/imageBase64";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 type TSignatureData = {
@@ -73,29 +73,6 @@ export default function SettingsPage() {
     setLogo(image);
   };
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
-    data: any
-  ) => {
-    e.preventDefault();
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/settings", {
-        method: "post",
-        body: JSON.stringify(data),
-      });
-      if (response.status === 200) {
-        toast.success("Setting updated Successfully");
-        fetchData();
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-      console.log("error :>> ", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const fetchData = async () => {
     try {
       const response = await fetch("/api/settings");
@@ -114,6 +91,29 @@ export default function SettingsPage() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    data: any
+  ) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/settings", {
+        method: "post",
+        body: JSON.stringify(data),
+      });
+      if (response.status === 200) {
+        toast.success("Settings updated successfully");
+        fetchData();
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.log("error :>> ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="p-4">
