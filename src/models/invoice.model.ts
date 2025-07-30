@@ -38,9 +38,12 @@ export interface IInvoice {
   tax_percentage: number;
   total: number;
   notes?: string | null;
+  status: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+const status = ["PENDING", "PAID", "CANCEL"];
 
 const userInvoiceSchema = new mongoose.Schema<IUserInvoice>(
   {
@@ -66,3 +69,29 @@ const itemSchema = new mongoose.Schema<IItems>(
     _id: false,
   }
 );
+
+const invoiceSchema = new mongoose.Schema<IInvoice>(
+  {
+    invoice_no: { type: String, required: true },
+    invoice_date: { type: Date, required: true },
+    due_date: { type: Date, required: true },
+    currency: { type: String, required: true },
+    from: { type: userInvoiceSchema, required: true },
+    to: { type: userInvoiceSchema, required: true },
+    items: { type: [itemSchema], required: true },
+    sub_total: { type: Number, required: true },
+    discount: { type: Number, default: 0 },
+    tax_percentage: { type: Number, default: 0 },
+    total: { type: Number, default: 0, required: true },
+    notes: { type: String, default: null },
+    status: { type: String, enum: status },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const invoiceModel =
+  mongoose.models.invoice || mongoose.model("invoice", invoiceSchema);
+
+export default invoiceModel;
