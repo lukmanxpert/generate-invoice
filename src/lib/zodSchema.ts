@@ -12,7 +12,7 @@ export const onboardingSchema = z.object({
   currency: z.string({ message: "Select currency" }).optional(),
 });
 
-export const createInvoiceSchema = z.object({
+export const invoiceSchemaZod = z.object({
   invoice_no: z.string().min(1, { message: "invoice no. required" }),
   invoice_date: z.date({ message: "Invoice date is required" }),
   due_date: z.date({ message: "invoice due date" }),
@@ -52,9 +52,9 @@ export const createInvoiceSchema = z.object({
   ),
 
   sub_total: z.number(),
-  discount: z.number().default(0),
+  discount: z.number(),
 
-  tax_percentage: z.number().default(0),
+  tax_percentage: z.number(),
 
   total: z.number(),
 
