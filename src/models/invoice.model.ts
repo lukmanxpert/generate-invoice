@@ -43,7 +43,7 @@ export interface IInvoice {
   updatedAt?: Date;
 }
 
-const status = ["PENDING", "PAID", "CANCEL"];
+const status = ["PAID", "UNPAID", "CANCEL"];
 
 const userInvoiceSchema = new mongoose.Schema<IUserInvoice>(
   {
