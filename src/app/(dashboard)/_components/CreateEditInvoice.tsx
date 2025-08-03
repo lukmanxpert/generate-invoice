@@ -78,7 +78,7 @@ export default function CreateEditInvoice({
                   className={cn(
                     "w-[240px] pl-3 text-left font-normal",
                     !watch("invoice_date") && "text-muted-foreground",
-                    "justify-start font-normal rounded-l-none grow w-full"
+                    "justify-start font-normal rounded-l-none flex-1 w-full"
                   )}
                 >
                   {watch("invoice_date") ? (
@@ -94,6 +94,51 @@ export default function CreateEditInvoice({
                   selected={watch("invoice_date")}
                   onSelect={(date) => {
                     setValue("invoice_date", date as Date, {
+                      shouldValidate: true,
+                    });
+                  }}
+                  disabled={(date) =>
+                    date > new Date() || date < new Date("1900-01-01")
+                  }
+                  captionLayout="dropdown"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          {errors.invoice_no && (
+            <p className="text-xs text-red-500">{errors.invoice_no.message}</p>
+          )}
+        </div>
+        {/* due date */}
+        <div className="grid">
+          <div className="flex items-center">
+            <div className="min-w-9 min-h-9 text-center border h-full flex justify-center items-center bg-neutral-100 rounded-l-md">
+              <CalendarIcon className="size-4" />
+            </div>
+            <Popover>
+              <PopoverTrigger className="w-full" asChild>
+                <Button
+                  type="button"
+                  variant={"outline"}
+                  className={cn(
+                    "w-[240px] pl-3 text-left font-normal",
+                    !watch("due_date") && "text-muted-foreground",
+                    "justify-start font-normal rounded-l-none flex-1 w-full"
+                  )}
+                >
+                  {watch("due_date") ? (
+                    format(watch("due_date"), "PPP")
+                  ) : (
+                    <span>Due Date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <Calendar
+                  mode="single"
+                  selected={watch("due_date")}
+                  onSelect={(date) => {
+                    setValue("due_date", date as Date, {
                       shouldValidate: true,
                     });
                   }}
