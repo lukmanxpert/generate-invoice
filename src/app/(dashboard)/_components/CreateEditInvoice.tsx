@@ -100,7 +100,6 @@ export default function CreateEditInvoice({
                   disabled={(date) =>
                     date > new Date() || date < new Date("1900-01-01")
                   }
-                  captionLayout="dropdown"
                 />
               </PopoverContent>
             </Popover>
@@ -110,6 +109,7 @@ export default function CreateEditInvoice({
           )}
         </div>
         {/* due date */}
+
         <div className="grid">
           <div className="flex items-center">
             <div className="min-w-9 min-h-9 text-center border h-full flex justify-center items-center bg-neutral-100 rounded-l-md">
@@ -143,9 +143,8 @@ export default function CreateEditInvoice({
                     });
                   }}
                   disabled={(date) =>
-                    date > new Date() || date < new Date("1900-01-01")
+                    date < new Date() || date < new Date("1900-01-01")
                   }
-                  captionLayout="dropdown"
                 />
               </PopoverContent>
             </Popover>
