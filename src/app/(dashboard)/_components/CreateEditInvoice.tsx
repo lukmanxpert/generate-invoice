@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
 
 interface ICreateEditInvoice {
   firstName: string | undefined;
@@ -43,7 +44,7 @@ export default function CreateEditInvoice({
     console.log("data :>> ", data);
   };
   return (
-    <form action="" className="grid py-4 ">
+    <form action="" className="grid py-4 gap-4 lg:gap-6">
       <div className="grid grid-cols-2 gap-4 lg:gap-6">
         {/* invoice no */}
         <div className="grid">
@@ -153,6 +154,146 @@ export default function CreateEditInvoice({
             <p className="text-xs text-red-500">{errors.invoice_no.message}</p>
           )}
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 lg:gap-6">
+        {/* form (current user details) */}
+
+        <div className="grid gap-2">
+          <Label>Form</Label>
+          {/* from name */}
+          <div>
+            <Input
+              type="text"
+              placeholder="From name"
+              {...register("from.name", { required: true })}
+            />
+            {errors.from?.name && (
+              <p className="text-xs text-red-500">{errors.from.name.message}</p>
+            )}
+          </div>
+          {/* email */}
+          <div>
+            <Input
+              type="email"
+              placeholder="joe@example.com"
+              {...register("from.email", { required: true })}
+            />
+            {errors.from?.email && (
+              <p className="text-xs text-red-500">
+                {errors.from.email.message}
+              </p>
+            )}
+          </div>
+          {/* address1 */}
+          <div>
+            <Input
+              type="text"
+              placeholder="Building No. / Flat No. / Shop No. / Building Name"
+              {...register("from.address1", { required: true })}
+            />
+            {errors.from?.address1 && (
+              <p className="text-xs text-red-500">
+                {errors.from.address1.message}
+              </p>
+            )}
+          </div>
+          {/* address2 */}
+          <div>
+            <Input
+              type="text"
+              placeholder="Street Name / Landmark"
+              {...register("from.address2", { required: true })}
+            />
+            {errors.from?.address2 && (
+              <p className="text-xs text-red-500">
+                {errors.from.address2.message}
+              </p>
+            )}
+          </div>
+          {/* address3 */}
+          <div>
+            <Input
+              type="text"
+              placeholder="City / State / Country / Postcode"
+              {...register("from.address3", { required: true })}
+            />
+            {errors.from?.address3 && (
+              <p className="text-xs text-red-500">
+                {errors.from.address3.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* to (client details) */}
+
+        <div className="grid gap-2">
+          <Label>To</Label>
+          {/* from name */}
+          <div>
+            <Input
+              type="text"
+              placeholder="To name"
+              {...register("to.name", { required: true })}
+            />
+            {errors.to?.name && (
+              <p className="text-xs text-red-500">{errors.to.name.message}</p>
+            )}
+          </div>
+          {/* email */}
+          <div>
+            <Input
+              type="email"
+              placeholder="joe@example.com"
+              {...register("to.email", { required: true })}
+            />
+            {errors.to?.email && (
+              <p className="text-xs text-red-500">{errors.to.email.message}</p>
+            )}
+          </div>
+          {/* address1 */}
+          <div>
+            <Input
+              type="text"
+              placeholder="Building No. / Flat No. / Shop No. / Building Name"
+              {...register("to.address1", { required: true })}
+            />
+            {errors.to?.address1 && (
+              <p className="text-xs text-red-500">
+                {errors.to.address1.message}
+              </p>
+            )}
+          </div>
+          {/* address2 */}
+          <div>
+            <Input
+              type="text"
+              placeholder="Street Name / Landmark"
+              {...register("to.address2", { required: true })}
+            />
+            {errors.to?.address2 && (
+              <p className="text-xs text-red-500">
+                {errors.to.address2.message}
+              </p>
+            )}
+          </div>
+          {/* address3 */}
+          <div>
+            <Input
+              type="text"
+              placeholder="City / State / Country / Postcode"
+              {...register("to.address3", { required: true })}
+            />
+            {errors.to?.address3 && (
+              <p className="text-xs text-red-500">
+                {errors.to.address3.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/*  */}
       </div>
     </form>
   );
