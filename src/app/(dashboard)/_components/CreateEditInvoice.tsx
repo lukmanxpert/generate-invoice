@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import z from "zod";
 import { invoiceSchemaZod } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,11 +35,19 @@ export default function CreateEditInvoice({
     handleSubmit,
     formState: { errors },
     watch,
+    control,
     setValue,
   } = useForm<z.infer<typeof invoiceSchemaZod>>({
     resolver: zodResolver(invoiceSchemaZod),
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // items
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "items",
+  });
+
   const onSubmit = (data: z.infer<typeof invoiceSchemaZod>) => {
     console.log("data :>> ", data);
   };
@@ -292,9 +300,25 @@ export default function CreateEditInvoice({
             )}
           </div>
         </div>
-
-        {/*  */}
       </div>
+
+      {/* items details */}
+      <div className="grid grid-cols-6 bg-neutral-50 py-1 px-1">
+        <div className="col-span-3">Item</div>
+        <div>Quantity</div>
+        <div>Price</div>
+        <div>Total</div>
+      </div>
+      {fields.map((item, index) => {
+        return (
+          <div key={index} className="grid grid-cols-6">
+            <div className="col-span-3">Item</div>
+            <div>Quantity</div>
+            <div>Price</div>
+            <div>Total</div>
+          </div>
+        );
+      })}
     </form>
   );
 }
