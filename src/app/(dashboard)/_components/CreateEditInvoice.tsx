@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, DeleteIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 
@@ -67,8 +67,24 @@ export default function CreateEditInvoice({
       const total = quantity * price;
       setValue(`items.${index}.total`, total);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(items), setValue]);
+
+  // add new item row
+  const handleAddNewItemRow = (e: Event) => {
+    e.preventDefault();
+    append({
+      item_name: "",
+      quantity: 0,
+      price: 0,
+      total: 0,
+    });
+  };
+
+  // remove item row
+  const handleRemoveItem = (index: number) => {
+    remove(index);
+  };
 
   const onSubmit = (data: z.infer<typeof invoiceSchemaZod>) => {
     console.log("data :>> ", data);
@@ -325,13 +341,14 @@ export default function CreateEditInvoice({
       </div>
 
       {/* items details */}
-      <div>
+      <div className="grid gap-2">
         <div className="grid grid-cols-6 bg-neutral-50 py-1 px-1 gap-2">
           <div className="col-span-3">Item</div>
           <div>Quantity</div>
           <div>Price</div>
           <div>Total</div>
         </div>
+
         {fields.map((item, index) => {
           return (
             <div key={index} className="grid grid-cols-6 gap-2">
@@ -371,22 +388,46 @@ export default function CreateEditInvoice({
                   </p>
                 )}
               </div>
-              <div>
+              <div className="relative">
                 <Input
                   placeholder="Enter total"
                   type="number"
                   {...register(`items.${index}.total`, { required: true })}
+                  disabled
                 />
                 {errors.items && errors.items[index]?.total && (
                   <p className="text-xs text-red-500">
                     {errors.items[index]?.total.message}
                   </p>
                 )}
+                {index !== 0 && (
+                  <div className="absolute top-0 right-0">
+                    <Button
+                      type="button"
+                      variant={"ghost"}
+                      size={"icon"}
+                      onClick={() => handleRemoveItem(index)}
+                      className="bg-red-50 text-red-500 cursor-pointer"
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           );
         })}
+
+        <Button
+          className="w-fit cursor-pointer"
+          type="button"
+          onClick={handleAddNewItemRow}
+        >
+          Add Item
+        </Button>
       </div>
+
+      {/* sub total, discount, tax, total */}
     </form>
   );
 }
