@@ -46,8 +46,8 @@ export const invoiceSchemaZod = z.object({
         .min(3, { message: "item name is required" })
         .max(100, { message: "Max character will be 100" }),
       quantity: z.number().min(0, { message: "Quantity can't be negative" }),
-      price: z.number().min(0, { message: "price can't be negative" }),
-      total: z.number().min(0, { message: "total can't be negative" }),
+      price: z.number().min(0, { message: "Price can't be negative" }),
+      total: z.number().min(0, { message: "Total can't be negative" }),
     })
   ),
 

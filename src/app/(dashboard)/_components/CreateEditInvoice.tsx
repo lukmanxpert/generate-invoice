@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import z from "zod";
 import { invoiceSchemaZod } from "@/lib/zodSchema";
@@ -39,6 +39,16 @@ export default function CreateEditInvoice({
     setValue,
   } = useForm<z.infer<typeof invoiceSchemaZod>>({
     resolver: zodResolver(invoiceSchemaZod),
+    defaultValues: {
+      items: [
+        {
+          item_name: "",
+          quantity: 0,
+          price: 0,
+          total: 0,
+        },
+      ],
+    },
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -47,6 +57,18 @@ export default function CreateEditInvoice({
     control,
     name: "items",
   });
+
+  // total of items
+  const items = watch("items");
+  useEffect(() => {
+    items.forEach((item, index) => {
+      const quantity = parseFloat(item.quantity.toString()) || 0;
+      const price = parseFloat(item.price.toString()) || 0;
+      const total = quantity * price;
+      setValue(`items.${index}.total`, total);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(items), setValue]);
 
   const onSubmit = (data: z.infer<typeof invoiceSchemaZod>) => {
     console.log("data :>> ", data);
@@ -303,22 +325,68 @@ export default function CreateEditInvoice({
       </div>
 
       {/* items details */}
-      <div className="grid grid-cols-6 bg-neutral-50 py-1 px-1">
-        <div className="col-span-3">Item</div>
-        <div>Quantity</div>
-        <div>Price</div>
-        <div>Total</div>
+      <div>
+        <div className="grid grid-cols-6 bg-neutral-50 py-1 px-1 gap-2">
+          <div className="col-span-3">Item</div>
+          <div>Quantity</div>
+          <div>Price</div>
+          <div>Total</div>
+        </div>
+        {fields.map((item, index) => {
+          return (
+            <div key={index} className="grid grid-cols-6 gap-2">
+              <div className="col-span-3">
+                <Input
+                  placeholder="Enter item name"
+                  type="text"
+                  {...register(`items.${index}.item_name`, { required: true })}
+                />
+                {errors.items && errors.items[index]?.item_name && (
+                  <p className="text-xs text-red-500">
+                    {errors.items[index]?.item_name.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  placeholder="Enter quantity"
+                  type="number"
+                  {...register(`items.${index}.quantity`, { required: true })}
+                />
+                {errors.items && errors.items[index]?.quantity && (
+                  <p className="text-xs text-red-500">
+                    {errors.items[index]?.quantity.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  placeholder="Enter price"
+                  type="number"
+                  {...register(`items.${index}.price`, { required: true })}
+                />
+                {errors.items && errors.items[index]?.price && (
+                  <p className="text-xs text-red-500">
+                    {errors.items[index]?.price.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  placeholder="Enter total"
+                  type="number"
+                  {...register(`items.${index}.total`, { required: true })}
+                />
+                {errors.items && errors.items[index]?.total && (
+                  <p className="text-xs text-red-500">
+                    {errors.items[index]?.total.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-      {fields.map((item, index) => {
-        return (
-          <div key={index} className="grid grid-cols-6">
-            <div className="col-span-3">Item</div>
-            <div>Quantity</div>
-            <div>Price</div>
-            <div>Total</div>
-          </div>
-        );
-      })}
     </form>
   );
 }
