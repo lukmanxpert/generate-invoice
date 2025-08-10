@@ -428,6 +428,38 @@ export default function CreateEditInvoice({
       </div>
 
       {/* sub total, discount, tax, total */}
+      <div>
+        <div className="max-w-md w-full ml-auto grid gap-2">
+          {/* sub total */}
+          <div className="grid grid-cols-2">
+            <Label>Sub Total: </Label>
+            <Input placeholder="Sub total" type="number" />
+          </div>
+          {/* discount */}
+          <div className="grid grid-cols-2">
+            <Label>Discount: </Label>
+            <Input placeholder="Discount" type="number" />
+          </div>
+          {/*  */}
+          <div className="grid grid-cols-2">
+            <Label>Discount: </Label>
+            <Input placeholder="Discount" type="number" />
+          </div>
+          {/* tax */}
+          <div className="grid grid-cols-2">
+            <Label>
+              Tax:{" "}
+              <Input
+                placeholder="%"
+                type="text"
+                className="min-w-14 w-14 max-w-14"
+                {...register("tax_percentage")}
+              />{" "}
+            </Label>
+            <Input placeholder="Tax amount" type="number" disabled />
+          </div>
+        </div>
+      </div>
     </form>
   );
 }
