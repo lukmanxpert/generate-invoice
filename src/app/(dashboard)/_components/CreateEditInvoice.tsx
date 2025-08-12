@@ -50,7 +50,7 @@ export default function CreateEditInvoice({
       ],
     },
   });
-  
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // items
@@ -68,6 +68,8 @@ export default function CreateEditInvoice({
       const total = quantity * price;
       setValue(`items.${index}.total`, total);
     });
+    const sub_total = items.reduce((prev, curr) => prev + curr.total, 0);
+    setValue("sub_total", sub_total);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(items), setValue]);
 
@@ -90,6 +92,14 @@ export default function CreateEditInvoice({
   const onSubmit = (data: z.infer<typeof invoiceSchemaZod>) => {
     console.log("data :>> ", data);
   };
+
+  const sub_total = watch("sub_total") || 0;
+  const discount = watch("discount") || 0;
+  const subTotalRemoveDiscount = sub_total - discount;
+  const taxAmount =
+    (subTotalRemoveDiscount * watch("tax_percentage")) / 100 || 0;
+  const totalAmount = subTotalRemoveDiscount - taxAmount;
+
   return (
     <form action="" className="grid py-4 gap-4 lg:gap-6">
       <div className="grid grid-cols-2 gap-4 lg:gap-6">
@@ -434,17 +444,35 @@ export default function CreateEditInvoice({
           {/* sub total */}
           <div className="grid grid-cols-2">
             <Label>Sub Total: </Label>
-            <Input placeholder="Sub total" type="number" />
+            <Input
+              value={watch("sub_total") ?? ""}
+              onChange={() => {}}
+              disabled
+              placeholder="Sub total"
+              type="number"
+            />
           </div>
           {/* discount */}
           <div className="grid grid-cols-2">
             <Label>Discount: </Label>
-            <Input placeholder="Discount" type="number" />
+            <Input
+              value={watch("discount") ?? ""}
+              onChange={(e) => {
+                setValue("discount", Number(e.target.value));
+              }}
+              placeholder="Discount"
+              type="number"
+            />
           </div>
           {/*  */}
           <div className="grid grid-cols-2">
-            <Label>Discount: </Label>
-            <Input placeholder="Discount" type="number" />
+            <Label></Label>
+            <Input
+              value={subTotalRemoveDiscount ?? ""}
+              disabled
+              placeholder="Sub total"
+              type="number"
+            />
           </div>
           {/* tax */}
           <div className="grid grid-cols-2">
@@ -452,13 +480,31 @@ export default function CreateEditInvoice({
               Tax:{" "}
               <Input
                 placeholder="%"
-                type="text"
+                type="number"
                 className="min-w-14 w-14 max-w-14"
                 {...register("tax_percentage")}
               />{" "}
             </Label>
-            <Input placeholder="Tax amount" type="number" disabled />
+            <Input
+              placeholder="Tax amount"
+              type="number"
+              value={taxAmount}
+              disabled
+            />
           </div>
+          {/* total amount */}
+          <div className="grid grid-cols-2">
+            <Label>Total: </Label>
+            <Input
+              value={totalAmount ?? ""}
+              className="disabled:font-semibold"
+              disabled
+              placeholder="Total"
+              type="number"
+            />
+          </div>
+          {/*  */}
+          <div className="flex justify-center items-center min-h-14 bg-red-500"></div>
         </div>
       </div>
     </form>
