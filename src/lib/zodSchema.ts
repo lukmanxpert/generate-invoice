@@ -15,8 +15,8 @@ export const onboardingSchema = z.object({
 export const invoiceSchemaZod = z.object({
   invoice_no: z.string().min(1, { message: "invoice no. required" }),
   invoice_date: z.date({ message: "Invoice date is required" }),
-  due_date: z.date({ message: "invoice due date" }),
-  currency: z.string({ message: "Currency is required" }),
+  due_date: z.date({ message: "invoice due date is required" }),
+  currency: z.string().min(1, { message: "Currency is required" }),
   from: z.object({
     name: z
       .string()
@@ -60,5 +60,5 @@ export const invoiceSchemaZod = z.object({
 
   notes: z.string().optional(),
 
-  status: z.enum(["PAID", "UNPAID", "CANCEL"]),
+  // status: z.enum(["PAID", "UNPAID", "CANCEL"]),
 });

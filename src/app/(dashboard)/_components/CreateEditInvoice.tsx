@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { CalendarIcon, DeleteIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ICreateEditInvoice {
   firstName: string | undefined;
@@ -48,6 +49,12 @@ export default function CreateEditInvoice({
           total: 0,
         },
       ],
+      from: {
+        name: `${firstName} ${lastName}`,
+        email: email as string,
+      },
+      tax_percentage: 0,
+      currency: currency
     },
   });
 
@@ -99,9 +106,22 @@ export default function CreateEditInvoice({
   const taxAmount =
     (subTotalRemoveDiscount * watch("tax_percentage")) / 100 || 0;
   const totalAmount = subTotalRemoveDiscount - taxAmount;
+  useEffect(() => {
+    setValue("total", totalAmount);
+  }, [setValue, totalAmount]);
+
+  const totalAmountInCurrencyFormat = new Intl.NumberFormat("en-us", {
+    style: "currency",
+    currency: currency,
+  }).format(totalAmount);
+
+  console.log("error", errors);
 
   return (
-    <form action="" className="grid py-4 gap-4 lg:gap-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="grid py-4 gap-4 lg:gap-6"
+    >
       <div className="grid grid-cols-2 gap-4 lg:gap-6">
         {/* invoice no */}
         <div className="grid">
@@ -162,12 +182,13 @@ export default function CreateEditInvoice({
               </PopoverContent>
             </Popover>
           </div>
-          {errors.invoice_no && (
-            <p className="text-xs text-red-500">{errors.invoice_no.message}</p>
+          {errors.invoice_date && (
+            <p className="text-xs text-red-500">
+              {errors.invoice_date.message}
+            </p>
           )}
         </div>
         {/* due date */}
-
         <div className="grid">
           <div className="flex items-center">
             <div className="min-w-9 min-h-9 text-center border h-full flex justify-center items-center bg-neutral-100 rounded-l-md">
@@ -207,8 +228,8 @@ export default function CreateEditInvoice({
               </PopoverContent>
             </Popover>
           </div>
-          {errors.invoice_no && (
-            <p className="text-xs text-red-500">{errors.invoice_no.message}</p>
+          {errors.due_date && (
+            <p className="text-xs text-red-500">{errors.due_date.message}</p>
           )}
         </div>
       </div>
@@ -379,7 +400,10 @@ export default function CreateEditInvoice({
                 <Input
                   placeholder="Enter quantity"
                   type="number"
-                  {...register(`items.${index}.quantity`, { required: true })}
+                  {...register(`items.${index}.quantity`, {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
                 />
                 {errors.items && errors.items[index]?.quantity && (
                   <p className="text-xs text-red-500">
@@ -391,7 +415,10 @@ export default function CreateEditInvoice({
                 <Input
                   placeholder="Enter price"
                   type="number"
-                  {...register(`items.${index}.price`, { required: true })}
+                  {...register(`items.${index}.price`, {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
                 />
                 {errors.items && errors.items[index]?.price && (
                   <p className="text-xs text-red-500">
@@ -403,7 +430,10 @@ export default function CreateEditInvoice({
                 <Input
                   placeholder="Enter total"
                   type="number"
-                  {...register(`items.${index}.total`, { required: true })}
+                  {...register(`items.${index}.total`, {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
                   disabled
                 />
                 {errors.items && errors.items[index]?.total && (
@@ -432,7 +462,7 @@ export default function CreateEditInvoice({
         <Button
           className="w-fit cursor-pointer"
           type="button"
-          onClick={handleAddNewItemRow}
+          onClick={() => handleAddNewItemRow}
         >
           Add Item
         </Button>
@@ -445,23 +475,20 @@ export default function CreateEditInvoice({
           <div className="grid grid-cols-2">
             <Label>Sub Total: </Label>
             <Input
-              value={watch("sub_total") ?? ""}
-              onChange={() => {}}
               disabled
               placeholder="Sub total"
               type="number"
+              {...register("sub_total", { valueAsNumber: true })}
             />
           </div>
           {/* discount */}
           <div className="grid grid-cols-2">
             <Label>Discount: </Label>
             <Input
-              value={watch("discount") ?? ""}
-              onChange={(e) => {
-                setValue("discount", Number(e.target.value));
-              }}
+              value={watch("discount") ?? 0}
               placeholder="Discount"
               type="number"
+              {...register("discount", { valueAsNumber: true })}
             />
           </div>
           {/*  */}
@@ -482,7 +509,7 @@ export default function CreateEditInvoice({
                 placeholder="%"
                 type="number"
                 className="min-w-14 w-14 max-w-14"
-                {...register("tax_percentage")}
+                {...register("tax_percentage", { valueAsNumber: true })}
               />{" "}
             </Label>
             <Input
@@ -496,17 +523,29 @@ export default function CreateEditInvoice({
           <div className="grid grid-cols-2">
             <Label>Total: </Label>
             <Input
-              value={totalAmount ?? ""}
+              // value={totalAmount ?? ""}
               className="disabled:font-semibold"
               disabled
               placeholder="Total"
               type="number"
+              {...register("total", { valueAsNumber: true })}
             />
           </div>
           {/*  */}
-          <div className="flex justify-center items-center min-h-14 bg-red-500"></div>
+          <div className="flex justify-center items-center min-h-14 font-bold text-lg">
+            {totalAmountInCurrencyFormat}
+          </div>
         </div>
       </div>
+
+      {/* notes */}
+      <div className="grid gap-2 max-w-xl">
+        <Label>Notes</Label>
+        <Textarea placeholder="Enter your notes" {...register("notes")} />
+      </div>
+      <Button className="cursor-pointer" size={"lg"}>
+        Create Invoice
+      </Button>
     </form>
   );
 }
