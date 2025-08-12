@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { connectDB } from "@/lib/connectDB";
 import invoiceModel from "@/models/invoice.model";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -45,11 +46,13 @@ export async function POST(req: NextRequest) {
       status: "UNPAID",
       userId: session.user.id,
     };
+    await connectDB();
     const data = await invoiceModel.create(payload);
     return NextResponse.json({
       message: "Invoice created success",
       data: data,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return NextResponse.json(
       {

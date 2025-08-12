@@ -17,12 +17,15 @@ import { CalendarIcon, DeleteIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface ICreateEditInvoice {
   firstName: string | undefined;
   lastName: string | undefined;
   email: string | undefined | null;
   currency: string | undefined;
+  invoiceId?: string | undefined; //for edit section
 }
 
 export default function CreateEditInvoice({
@@ -30,6 +33,7 @@ export default function CreateEditInvoice({
   lastName,
   email,
   currency,
+  invoiceId, //for edit section
 }: ICreateEditInvoice) {
   const {
     register,
@@ -54,11 +58,15 @@ export default function CreateEditInvoice({
         email: email as string,
       },
       tax_percentage: 0,
-      currency: currency
+      currency: currency,
+      discount: 0,
+      sub_total: 0,
+      total: 0,
     },
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   // items
   const { fields, append, remove } = useFieldArray({
@@ -96,7 +104,25 @@ export default function CreateEditInvoice({
     remove(index);
   };
 
-  const onSubmit = (data: z.infer<typeof invoiceSchemaZod>) => {
+  const onSubmit = async (data: z.infer<typeof invoiceSchemaZod>) => {
+    // for create invoice
+    if (!invoiceId) {
+      setIsLoading(true);
+      const response = await fetch("/api/invoice", {
+        method: "post",
+        body: JSON.stringify(data),
+      });
+      const responseData = await response.json();
+      if (response.status === 200) {
+        toast.success(responseData?.message);
+        router.push("/invoice");
+      } else {
+        toast.error("Something went wrong");
+      }
+      setIsLoading(false);
+      return;
+    }
+    // for edit invoice
     console.log("data :>> ", data);
   };
 
@@ -105,7 +131,7 @@ export default function CreateEditInvoice({
   const subTotalRemoveDiscount = sub_total - discount;
   const taxAmount =
     (subTotalRemoveDiscount * watch("tax_percentage")) / 100 || 0;
-  const totalAmount = subTotalRemoveDiscount - taxAmount;
+  const totalAmount = subTotalRemoveDiscount + taxAmount;
   useEffect(() => {
     setValue("total", totalAmount);
   }, [setValue, totalAmount]);
@@ -114,8 +140,6 @@ export default function CreateEditInvoice({
     style: "currency",
     currency: currency,
   }).format(totalAmount);
-
-  console.log("error", errors);
 
   return (
     <form
@@ -134,6 +158,7 @@ export default function CreateEditInvoice({
               placeholder="Invoice No."
               className="rounded-l-none"
               {...register("invoice_no", { required: true })}
+              disabled={isLoading}
             />
           </div>
           {errors.invoice_no && (
@@ -153,6 +178,7 @@ export default function CreateEditInvoice({
                 <Button
                   type="button"
                   variant={"outline"}
+                  disabled={isLoading}
                   className={cn(
                     "w-[240px] pl-3 text-left font-normal",
                     !watch("invoice_date") && "text-muted-foreground",
@@ -199,6 +225,7 @@ export default function CreateEditInvoice({
                 <Button
                   type="button"
                   variant={"outline"}
+                  disabled={isLoading}
                   className={cn(
                     "w-[240px] pl-3 text-left font-normal",
                     !watch("due_date") && "text-muted-foreground",
@@ -245,6 +272,7 @@ export default function CreateEditInvoice({
               type="text"
               placeholder="From name"
               {...register("from.name", { required: true })}
+              disabled={isLoading}
             />
             {errors.from?.name && (
               <p className="text-xs text-red-500">{errors.from.name.message}</p>
@@ -256,6 +284,7 @@ export default function CreateEditInvoice({
               type="email"
               placeholder="joe@example.com"
               {...register("from.email", { required: true })}
+              disabled={isLoading}
             />
             {errors.from?.email && (
               <p className="text-xs text-red-500">
@@ -269,6 +298,7 @@ export default function CreateEditInvoice({
               type="text"
               placeholder="Building No. / Flat No. / Shop No. / Building Name"
               {...register("from.address1", { required: true })}
+              disabled={isLoading}
             />
             {errors.from?.address1 && (
               <p className="text-xs text-red-500">
@@ -282,6 +312,7 @@ export default function CreateEditInvoice({
               type="text"
               placeholder="Street Name / Landmark"
               {...register("from.address2", { required: true })}
+              disabled={isLoading}
             />
             {errors.from?.address2 && (
               <p className="text-xs text-red-500">
@@ -295,6 +326,7 @@ export default function CreateEditInvoice({
               type="text"
               placeholder="City / State / Country / Postcode"
               {...register("from.address3", { required: true })}
+              disabled={isLoading}
             />
             {errors.from?.address3 && (
               <p className="text-xs text-red-500">
@@ -314,6 +346,7 @@ export default function CreateEditInvoice({
               type="text"
               placeholder="To name"
               {...register("to.name", { required: true })}
+              disabled={isLoading}
             />
             {errors.to?.name && (
               <p className="text-xs text-red-500">{errors.to.name.message}</p>
@@ -325,6 +358,7 @@ export default function CreateEditInvoice({
               type="email"
               placeholder="joe@example.com"
               {...register("to.email", { required: true })}
+              disabled={isLoading}
             />
             {errors.to?.email && (
               <p className="text-xs text-red-500">{errors.to.email.message}</p>
@@ -336,6 +370,7 @@ export default function CreateEditInvoice({
               type="text"
               placeholder="Building No. / Flat No. / Shop No. / Building Name"
               {...register("to.address1", { required: true })}
+              disabled={isLoading}
             />
             {errors.to?.address1 && (
               <p className="text-xs text-red-500">
@@ -349,6 +384,7 @@ export default function CreateEditInvoice({
               type="text"
               placeholder="Street Name / Landmark"
               {...register("to.address2", { required: true })}
+              disabled={isLoading}
             />
             {errors.to?.address2 && (
               <p className="text-xs text-red-500">
@@ -362,6 +398,7 @@ export default function CreateEditInvoice({
               type="text"
               placeholder="City / State / Country / Postcode"
               {...register("to.address3", { required: true })}
+              disabled={isLoading}
             />
             {errors.to?.address3 && (
               <p className="text-xs text-red-500">
@@ -389,6 +426,7 @@ export default function CreateEditInvoice({
                   placeholder="Enter item name"
                   type="text"
                   {...register(`items.${index}.item_name`, { required: true })}
+                  disabled={isLoading}
                 />
                 {errors.items && errors.items[index]?.item_name && (
                   <p className="text-xs text-red-500">
@@ -404,6 +442,7 @@ export default function CreateEditInvoice({
                     required: true,
                     valueAsNumber: true,
                   })}
+                  disabled={isLoading}
                 />
                 {errors.items && errors.items[index]?.quantity && (
                   <p className="text-xs text-red-500">
@@ -419,6 +458,7 @@ export default function CreateEditInvoice({
                     required: true,
                     valueAsNumber: true,
                   })}
+                  disabled={isLoading}
                 />
                 {errors.items && errors.items[index]?.price && (
                   <p className="text-xs text-red-500">
@@ -447,6 +487,7 @@ export default function CreateEditInvoice({
                       type="button"
                       variant={"ghost"}
                       size={"icon"}
+                      disabled={isLoading}
                       onClick={() => handleRemoveItem(index)}
                       className="bg-red-50 text-red-500 cursor-pointer"
                     >
@@ -462,6 +503,7 @@ export default function CreateEditInvoice({
         <Button
           className="w-fit cursor-pointer"
           type="button"
+          disabled={isLoading}
           onClick={() => handleAddNewItemRow}
         >
           Add Item
@@ -489,6 +531,7 @@ export default function CreateEditInvoice({
               placeholder="Discount"
               type="number"
               {...register("discount", { valueAsNumber: true })}
+              disabled={isLoading}
             />
           </div>
           {/*  */}
@@ -510,6 +553,7 @@ export default function CreateEditInvoice({
                 type="number"
                 className="min-w-14 w-14 max-w-14"
                 {...register("tax_percentage", { valueAsNumber: true })}
+                disabled={isLoading}
               />{" "}
             </Label>
             <Input
@@ -541,10 +585,14 @@ export default function CreateEditInvoice({
       {/* notes */}
       <div className="grid gap-2 max-w-xl">
         <Label>Notes</Label>
-        <Textarea placeholder="Enter your notes" {...register("notes")} />
+        <Textarea
+          disabled={isLoading}
+          placeholder="Enter your notes"
+          {...register("notes")}
+        />
       </div>
-      <Button className="cursor-pointer" size={"lg"}>
-        Create Invoice
+      <Button disabled={isLoading} className="cursor-pointer" size={"lg"}>
+        {isLoading ? "Please wait..." : "Create Invoice"}
       </Button>
     </form>
   );
