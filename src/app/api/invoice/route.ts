@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/connectDB";
 import invoiceModel from "@/models/invoice.model";
 import { NextRequest, NextResponse } from "next/server";
 
+// post invoice
 export async function POST(req: NextRequest) {
   try {
     const session = await auth();
@@ -57,6 +58,40 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         message: error?.message || error || "Something went wrong",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+// get invoice
+export async function GET(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json(
+        {
+          message: "Unauthorize access",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+    await connectDB();
+    const allInvoice = await invoiceModel.find({ userId: session.user.id });
+    return NextResponse.json({
+      message: "Success",
+      success: true,
+      error: false,
+      data: allInvoice,
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        message: error.message || error || "Something went wrong",
       },
       {
         status: 500,
