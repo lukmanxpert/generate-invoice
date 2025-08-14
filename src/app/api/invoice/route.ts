@@ -81,12 +81,32 @@ export async function GET(req: NextRequest) {
       );
     }
     await connectDB();
-    const allInvoice = await invoiceModel.find({ userId: session.user.id });
+
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = 2;
+    const skip = (page - 1) * limit;
+
+    const [allInvoice, totalCount] = await Promise.all([
+      await invoiceModel
+        .find({ userId: session.user.id })
+        .skip(skip)
+        .limit(limit),
+      invoiceModel.countDocuments({ userId: session.user.id }),
+    ]);
+    // const allInvoice = await invoiceModel
+    //   .find({ userId: session.user.id })
+    //   .skip(skip)
+    //   .limit(limit);
+    const totalPage = Math.ceil(totalCount / limit);
     return NextResponse.json({
       message: "Success",
       success: true,
       error: false,
       data: allInvoice,
+      totalCount: totalCount,
+      totalPage: totalPage,
+      page: page,
     });
   } catch (error: any) {
     return NextResponse.json(

@@ -35,6 +35,8 @@ interface IInvoiceClientPage {
 export default function InvoiceClientPage({ currency }: IInvoiceClientPage) {
   const [data, setData] = useState<IInvoice[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(1);
 
   const fetchData = async () => {
     try {
@@ -131,22 +133,27 @@ export default function InvoiceClientPage({ currency }: IInvoiceClientPage) {
       ) : (
         <>
           <DataTable columns={columns} data={data} key={"invoiceTable"} />
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div className="my-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" onClick={()=>setPage(1)} />
+                </PaginationItem>
+
+                {new Array(totalPage).fill(null).map((item, index: number) => {
+                  return (
+                    <PaginationItem key={index}>
+                      <PaginationLink href="#" onClick={()=>setPage(index+1)}>{index+1}</PaginationLink>
+                    </PaginationItem>
+                  );
+                })}
+
+                <PaginationItem>
+                  <PaginationNext href="#" onClick={()=>setPage(totalPage)} />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </>
       )}
     </div>
