@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
       await invoiceModel
         .find({ userId: session.user.id })
         .skip(skip)
-        .limit(limit),
+        .limit(limit).sort({createdAt: -1}),
       invoiceModel.countDocuments({ userId: session.user.id }),
     ]);
     // const allInvoice = await invoiceModel
@@ -108,6 +108,7 @@ export async function GET(req: NextRequest) {
       totalPage: totalPage,
       page: page,
     });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return NextResponse.json(
       {

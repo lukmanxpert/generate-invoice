@@ -7,7 +7,7 @@ export default async function InvoicePage() {
   const session = await auth();
   return (
     <Suspense fallback={<Loading />}>
-      <InvoiceClientPage currency={session?.user.currency} />
+      <InvoiceClientPage userId={session?.user.id} currency={session?.user.currency} />
     </Suspense>
   );
 }

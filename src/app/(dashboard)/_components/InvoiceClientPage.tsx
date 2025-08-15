@@ -24,16 +24,20 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useRouter } from "next/navigation";
 
 interface IInvoiceClientPage {
   currency: string | undefined;
+  userId: string | undefined;
 }
 
-export default function InvoiceClientPage({ currency }: IInvoiceClientPage) {
+export default function InvoiceClientPage({ userId, currency }: IInvoiceClientPage) {
   const [data, setData] = useState<IInvoice[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(1);
+
+  const router = useRouter();
 
   const fetchData = async () => {
     try {
@@ -97,7 +101,8 @@ export default function InvoiceClientPage({ currency }: IInvoiceClientPage) {
     {
       accessorKey: "_id",
       header: "Action",
-      cell: () => {
+      cell: ({ row }) => {
+        const invoiceId = row.original._id;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -105,7 +110,11 @@ export default function InvoiceClientPage({ currency }: IInvoiceClientPage) {
               <MoreVertical className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>View</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => router.push(`/api/invoice/${userId}/${invoiceId}`)}
+              >
+                View
+              </DropdownMenuItem>
               <DropdownMenuItem>Edit</DropdownMenuItem>
               <DropdownMenuItem>Paid</DropdownMenuItem>
               <DropdownMenuItem>Send Email</DropdownMenuItem>
