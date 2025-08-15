@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const currencyOptions = {
@@ -10,5 +10,7 @@ export const currencyOptions = {
   USD: "$",
   GBP: "£",
   EUR: "€",
-  YEN: "¥"
-}
+  YEN: "¥",
+};
+
+export type TCurrencyKey = keyof typeof currencyOptions;
