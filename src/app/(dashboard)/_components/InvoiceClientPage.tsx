@@ -6,22 +6,19 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { IInvoice } from "@/models/invoice.model";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { MoreHorizontal, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -41,10 +38,11 @@ export default function InvoiceClientPage({ currency }: IInvoiceClientPage) {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/invoice");
+      const response = await fetch(`/api/invoice?page=${page}`);
       const responseData = await response.json();
       if (response.status === 200) {
         setData(responseData.data || []);
+        setTotalPage(responseData.totalPage || 1);
       } else {
         toast.error("Something went wrong!");
       }
@@ -58,7 +56,8 @@ export default function InvoiceClientPage({ currency }: IInvoiceClientPage) {
 
   useEffect(() => {
     fetchData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   // column config
   const columns: ColumnDef<IInvoice>[] = [
@@ -133,27 +132,39 @@ export default function InvoiceClientPage({ currency }: IInvoiceClientPage) {
       ) : (
         <>
           <DataTable columns={columns} data={data} key={"invoiceTable"} />
-          <div className="my-4">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious href="#" onClick={()=>setPage(1)} />
-                </PaginationItem>
+          {totalPage !== 1 && (
+            <div className="my-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" onClick={() => setPage(1)} />
+                  </PaginationItem>
 
-                {new Array(totalPage).fill(null).map((item, index: number) => {
-                  return (
-                    <PaginationItem key={index}>
-                      <PaginationLink href="#" onClick={()=>setPage(index+1)}>{index+1}</PaginationLink>
-                    </PaginationItem>
-                  );
-                })}
+                  {new Array(totalPage)
+                    .fill(null)
+                    .map((item, index: number) => {
+                      return (
+                        <PaginationItem key={index}>
+                          <PaginationLink
+                            href="#"
+                            onClick={() => setPage(index + 1)}
+                          >
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    })}
 
-                <PaginationItem>
-                  <PaginationNext href="#" onClick={()=>setPage(totalPage)} />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={() => setPage(totalPage)}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </>
       )}
     </div>
