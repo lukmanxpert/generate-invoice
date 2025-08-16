@@ -4,7 +4,7 @@ import { connectDB } from "@/lib/connectDB";
 import settingsModel, { ISettings } from "@/models/Settings.model";
 import invoiceModel, { IInvoice } from "@/models/invoice.model";
 import { format } from "date-fns";
-import { currencyOptions, TCurrencyKey } from "@/lib/utils";
+// import { currencyOptions, TCurrencyKey } from "@/lib/utils";
 
 export const GET = async (
   req: NextRequest,
@@ -48,8 +48,8 @@ export const GET = async (
     });
     const FULL_WIDTH = 211;
     const COLOR_CODE = "#8c00ff";
-    const currencyStr = invoice.currency as TCurrencyKey;
-    const currency = currencyOptions[currencyStr];
+    // const currencyStr = invoice.currency as TCurrencyKey;
+    // const currency = currencyOptions[currencyStr];
 
     // top border
     doc.setFillColor(COLOR_CODE);

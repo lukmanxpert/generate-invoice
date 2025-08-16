@@ -21,10 +21,10 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 interface ICreateEditInvoice {
-  firstName: string | undefined;
-  lastName: string | undefined;
-  email: string | undefined | null;
-  currency: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  email?: string | undefined | null;
+  currency?: string | undefined;
   invoiceId?: string | undefined; //for edit section
 }
 
@@ -42,6 +42,7 @@ export default function CreateEditInvoice({
     watch,
     control,
     setValue,
+    reset
   } = useForm<z.infer<typeof invoiceSchemaZod>>({
     resolver: zodResolver(invoiceSchemaZod),
     defaultValues: {
@@ -67,6 +68,30 @@ export default function CreateEditInvoice({
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
+
+  // edit component
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/invoice?invoiceId=${invoiceId}`);
+      const responseData = await response.json();
+      if (response.status === 200) {
+        const invoiceData = responseData.data[0];
+        reset(invoiceData)
+      }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (invoiceId) {
+      fetchData();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invoiceId]);
 
   // items
   const { fields, append, remove } = useFieldArray({
@@ -138,7 +163,7 @@ export default function CreateEditInvoice({
 
   const totalAmountInCurrencyFormat = new Intl.NumberFormat("en-us", {
     style: "currency",
-    currency: currency,
+    currency: currency || watch("currency") || "USD",
   }).format(totalAmount);
 
   return (

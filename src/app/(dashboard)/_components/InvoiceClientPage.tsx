@@ -31,7 +31,10 @@ interface IInvoiceClientPage {
   userId: string | undefined;
 }
 
-export default function InvoiceClientPage({ userId, currency }: IInvoiceClientPage) {
+export default function InvoiceClientPage({
+  userId,
+  currency,
+}: IInvoiceClientPage) {
   const [data, setData] = useState<IInvoice[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -105,19 +108,31 @@ export default function InvoiceClientPage({ userId, currency }: IInvoiceClientPa
         const invoiceId = row.original._id;
         return (
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger className="cursor-pointer">
               <span className="sr-only">Open Menu</span>
               <MoreVertical className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => router.push(`/api/invoice/${userId}/${invoiceId}`)}
+                className="cursor-pointer"
+                onClick={() =>
+                  router.push(`/api/invoice/${userId}/${invoiceId}`)
+                }
               >
                 View
               </DropdownMenuItem>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
-              <DropdownMenuItem>Paid</DropdownMenuItem>
-              <DropdownMenuItem>Send Email</DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => router.push(`/invoice/edit/${invoiceId}`)}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                Paid
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                Send Email
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -155,7 +170,7 @@ export default function InvoiceClientPage({ userId, currency }: IInvoiceClientPa
                       return (
                         <PaginationItem key={index}>
                           <PaginationLink
-                            href="#"
+                            className="cursor-pointer"
                             onClick={() => setPage(index + 1)}
                           >
                             {index + 1}
