@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
 import { connectDB } from "@/lib/connectDB";
-import settingsModel from "@/models/Settings.model";
+import settingsModel, { ISettings } from "@/models/Settings.model";
 import invoiceModel, { IInvoice } from "@/models/invoice.model";
 import { format } from "date-fns";
 import { currencyOptions, TCurrencyKey } from "@/lib/utils";
@@ -14,13 +14,31 @@ export const GET = async (
     const { invoiceId, userId } = await params;
 
     await connectDB();
-    const settings = await settingsModel.findOne({ userId: userId });
+    const settings: ISettings | null = await settingsModel.findOne({
+      userId: userId,
+    });
     const invoice: IInvoice | null = await invoiceModel.findById(invoiceId);
 
     if (!invoice) {
-      return NextResponse.json({
-        message: "No invoice found",
-      });
+      return NextResponse.json(
+        {
+          message: "No invoice found",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+
+    if (!settings) {
+      return NextResponse.json(
+        {
+          message: "Please add logo and signature in settings",
+        },
+        {
+          status: 500,
+        }
+      );
     }
 
     const doc = new jsPDF({
@@ -38,7 +56,7 @@ export const GET = async (
     doc.rect(0, 0, FULL_WIDTH, 2, "F");
 
     // invoice logo
-    doc.addImage(settings.invoiceLogo, 15, 13, 60, 12);
+    doc.addImage(settings.invoiceLogo as string, 15, 13, 60, 12);
 
     // invoice text
     doc.setFontSize(25);
@@ -132,6 +150,40 @@ export const GET = async (
     });
 
     // tax percentage
+    doc.text(`Tax ${invoice.tax_percentage}%:`, 160, Yaxis + 30);
+    const taxAmount =
+      (sub_total_remove_discount * Number(invoice.tax_percentage)) / 100;
+    doc.text(`${taxAmount}`, FULL_WIDTH - 15, Yaxis + 230, {
+      align: "right",
+    });
+
+    // total amount
+    doc.setFont("times", "bold");
+    const totalAmount = Number(invoice.total) - Number(taxAmount);
+    doc.text(`Total: `, 160, Yaxis + 35);
+    doc.text(`${totalAmount}`, FULL_WIDTH - 15, Yaxis + 35, { align: "right" });
+
+    //signature
+    doc.setFont("times", "normal");
+    doc.addImage(
+      settings.signature?.image as string,
+      FULL_WIDTH - 60,
+      Yaxis + 40,
+      50,
+      20
+    );
+    doc.text(
+      `${settings.signature?.name as string}`,
+      FULL_WIDTH - 15,
+      Yaxis + 60,
+      { align: "right" }
+    );
+
+    //notes
+    doc.setFont("times", "bold");
+    doc.text("Notes : ", 15, Yaxis + 70);
+    doc.setFont("times", "normal");
+    doc.text(`${invoice.notes}`, 15, Yaxis + 75);
 
     // pdf buffer create
     const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
