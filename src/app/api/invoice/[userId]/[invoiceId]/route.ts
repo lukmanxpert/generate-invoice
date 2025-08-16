@@ -115,6 +115,25 @@ export const GET = async (
       doc.text(`${item.total}`, TOTAL_AXIS, Yaxis);
     });
 
+    doc.text("Sub Total", 160, Yaxis + 15);
+    doc.text(`${invoice.sub_total}`, FULL_WIDTH - 15, Yaxis + 15, {
+      align: "right",
+    });
+
+    doc.text("Discount", 160, Yaxis + 20);
+    doc.text(`-${invoice.discount}`, FULL_WIDTH - 15, Yaxis + 20, {
+      align: "right",
+    });
+
+    const sub_total_remove_discount =
+      Number(invoice.sub_total) - Number(invoice.discount);
+    doc.text(`${sub_total_remove_discount}`, FULL_WIDTH - 15, Yaxis + 25, {
+      align: "right",
+    });
+
+    // tax percentage
+
+    // pdf buffer create
     const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
 
     return new NextResponse(pdfBuffer, {
