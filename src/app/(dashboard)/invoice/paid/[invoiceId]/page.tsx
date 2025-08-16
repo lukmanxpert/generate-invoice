@@ -14,6 +14,7 @@ import { ArrowLeft, CheckIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function PaidInvoicePage() {
   const [data, setData] = useState<IInvoice>();
@@ -38,8 +39,32 @@ export default function PaidInvoicePage() {
 
   useEffect(() => {
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleUpdate = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/invoice", {
+        method: "put",
+        body: JSON.stringify({
+          invoiceId,
+          ...data,
+          status: "PAID",
+        }),
+      });
+      if (response.status === 200) {
+        fetchData();
+        toast.success("Invoice status updated");
+      } else {
+        toast.error("Something went wrong");
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    } finally {
+      setIsLoading(true);
+    }
+  };
   return (
     <div className="p-4">
       <div className="flex items-center  gap-4 relative z-10">
@@ -61,7 +86,7 @@ export default function PaidInvoicePage() {
             {isLoading ? (
               <Loading />
             ) : data?.status === "UNPAID" ? (
-              <Button className="w-full cursor-pointer">
+              <Button className="w-full cursor-pointer" onClick={handleUpdate}>
                 Make Invoice Paid
               </Button>
             ) : (
