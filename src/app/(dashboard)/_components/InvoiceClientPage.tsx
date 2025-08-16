@@ -127,7 +127,10 @@ export default function InvoiceClientPage({
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => router.push(`/invoice/paid/${invoiceId}`)}
+              >
                 Paid
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">

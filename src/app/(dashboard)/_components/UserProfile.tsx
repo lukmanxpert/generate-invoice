@@ -24,7 +24,7 @@ export default async function UserProfile() {
         </DialogHeader>
         <UserProfileEdit
           firstName={session?.user.firstName}
-          lastName={session?.user?.firstName}
+          lastName={session?.user?.lastName}
           email={session?.user.email}
           currency={session?.user.currency}
         />
