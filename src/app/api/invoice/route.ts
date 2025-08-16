@@ -85,21 +85,22 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
 
-    const invoiceId = searchParams.get("invoiceId")
+    const invoiceId = searchParams.get("invoiceId");
 
     const limit = 5;
     const skip = (page - 1) * limit;
 
     const query = {
-      ...(invoiceId && {_id: invoiceId}),
-      userId: session.user.id
-    }
+      ...(invoiceId && { _id: invoiceId }),
+      userId: session.user.id,
+    };
 
     const [allInvoice, totalCount] = await Promise.all([
       await invoiceModel
         .find(query)
         .skip(skip)
-        .limit(limit).sort({createdAt: -1}),
+        .limit(limit)
+        .sort({ createdAt: -1 }),
       invoiceModel.countDocuments(query),
     ]);
     // const allInvoice = await invoiceModel
@@ -116,7 +117,74 @@ export async function GET(req: NextRequest) {
       totalPage: totalPage,
       page: page,
     });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        message: error.message || error || "Something went wrong",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+// update invoice
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json(
+        {
+          message: "Unauthorize access",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+    const {
+      invoice_no,
+      invoice_date,
+      due_date,
+      currency,
+      from,
+      to,
+      items,
+      sub_total,
+      discount,
+      tax_percentage,
+      total,
+      notes,
+      status,
+      invoiceId,
+    } = await req.json();
+    const payload = {
+      invoice_no,
+      invoice_date,
+      due_date,
+      currency,
+      from,
+      to,
+      items,
+      sub_total,
+      discount,
+      tax_percentage,
+      total,
+      notes,
+      status,
+    };
+    await connectDB();
+    const updateInvoice = await invoiceModel.findByIdAndUpdate(
+      invoiceId,
+      payload
+    );
+    return NextResponse.json({
+      message: "Invoice updated successfully",
+      data: updateInvoice,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return NextResponse.json(
       {

@@ -38,6 +38,7 @@ export default function PaidInvoicePage() {
 
   useEffect(() => {
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="p-4">
