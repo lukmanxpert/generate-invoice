@@ -42,7 +42,8 @@ export default function CreateEditInvoice({
     watch,
     control,
     setValue,
-    reset
+    getValues,
+    reset,
   } = useForm<z.infer<typeof invoiceSchemaZod>>({
     resolver: zodResolver(invoiceSchemaZod),
     defaultValues: {
@@ -77,9 +78,13 @@ export default function CreateEditInvoice({
       const responseData = await response.json();
       if (response.status === 200) {
         const invoiceData = responseData.data[0];
-        reset(invoiceData)
+        reset({
+          ...invoiceData,
+          invoice_date: new Date(invoiceData.invoice_date),
+          due_date: new Date(invoiceData.due_date),
+        });
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
     } finally {
       setIsLoading(false);
@@ -90,7 +95,7 @@ export default function CreateEditInvoice({
     if (invoiceId) {
       fetchData();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invoiceId]);
 
   // items
@@ -148,7 +153,26 @@ export default function CreateEditInvoice({
       return;
     }
     // for edit invoice
-    console.log("data :>> ", data);
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/invoice", {
+        method: "put",
+        body: JSON.stringify({
+          invoiceId,
+          ...data,
+        }),
+      });
+      if (response.status === 200) {
+        toast.success("Invoice updated successfully");
+        router.push("/invoice")
+      } else {
+        toast.error("Something went wrong");
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    } finally {
+      setIsLoading(true);
+    }
   };
 
   const sub_total = watch("sub_total") || 0;
@@ -206,12 +230,12 @@ export default function CreateEditInvoice({
                   disabled={isLoading}
                   className={cn(
                     "w-[240px] pl-3 text-left font-normal",
-                    !watch("invoice_date") && "text-muted-foreground",
+                    !getValues("invoice_date") && "text-muted-foreground",
                     "justify-start font-normal rounded-l-none flex-1 w-full"
                   )}
                 >
-                  {watch("invoice_date") ? (
-                    format(watch("invoice_date"), "PPP")
+                  {getValues("invoice_date") ? (
+                    format(getValues("invoice_date"), "PPP")
                   ) : (
                     <span>Pick a date</span>
                   )}
@@ -220,7 +244,7 @@ export default function CreateEditInvoice({
               <PopoverContent>
                 <Calendar
                   mode="single"
-                  selected={watch("invoice_date")}
+                  selected={getValues("invoice_date")}
                   onSelect={(date) => {
                     setValue("invoice_date", date as Date, {
                       shouldValidate: true,
@@ -617,7 +641,7 @@ export default function CreateEditInvoice({
         />
       </div>
       <Button disabled={isLoading} className="cursor-pointer" size={"lg"}>
-        {isLoading ? "Please wait..." : "Create Invoice"}
+        {isLoading ? "Please wait..." : invoiceId ? "Update Invoice" : "Create Invoice"}
       </Button>
     </form>
   );

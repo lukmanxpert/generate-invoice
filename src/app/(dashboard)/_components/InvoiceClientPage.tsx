@@ -25,6 +25,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 interface IInvoiceClientPage {
   currency: string | undefined;
@@ -99,6 +100,12 @@ export default function InvoiceClientPage({
           currency: currency,
         }).format(row.original.total);
         return totalAmountInCurrencyFormat;
+      },
+    },
+    {
+      accessorKey: "status",
+      cell: ({ row }) => {
+        return <Badge>{row.original.status}</Badge>;
       },
     },
     {

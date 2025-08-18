@@ -151,15 +151,18 @@ export const GET = async (
 
     // tax percentage
     doc.text(`Tax ${invoice.tax_percentage}%:`, 160, Yaxis + 30);
-    const taxAmount =
-      (sub_total_remove_discount * Number(invoice.tax_percentage)) / 100;
-    doc.text(`${taxAmount}`, FULL_WIDTH - 15, Yaxis + 230, {
+    let taxAmount = 0;
+    if (invoice.tax_percentage) {
+      taxAmount =
+        (sub_total_remove_discount * Number(invoice.tax_percentage)) / 100;
+    }
+    doc.text(`${taxAmount}`, FULL_WIDTH - 15, Yaxis + 30, {
       align: "right",
     });
 
     // total amount
     doc.setFont("times", "bold");
-    const totalAmount = Number(invoice.total) - Number(taxAmount);
+    const totalAmount = Number(sub_total_remove_discount) + Number(taxAmount);
     doc.text(`Total: `, 160, Yaxis + 35);
     doc.text(`${totalAmount}`, FULL_WIDTH - 15, Yaxis + 35, { align: "right" });
 
