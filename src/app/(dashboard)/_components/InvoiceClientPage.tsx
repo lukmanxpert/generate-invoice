@@ -67,6 +67,27 @@ export default function InvoiceClientPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
+  // send email
+  const handleSendEmail = async (invoiceId: string, subject: string) => {
+    try {
+      toast.loading("Please wait...");
+      const response = await fetch(`/api/email${invoiceId}`, {
+        method: "post",
+        body: JSON.stringify({
+          subject: subject,
+        }),
+      });
+      const responseData = await response.json();
+      if (response.status === 200) {
+        toast.success(responseData.message);
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    } finally {
+      toast.dismiss();
+    }
+  };
+
   // column config
   const columns: ColumnDef<IInvoice>[] = [
     {
@@ -112,7 +133,7 @@ export default function InvoiceClientPage({
       accessorKey: "_id",
       header: "Action",
       cell: ({ row }) => {
-        const invoiceId = row.original._id;
+        const invoiceId = row.original._id.toString();
         return (
           <DropdownMenu>
             <DropdownMenuTrigger className="cursor-pointer">
@@ -140,7 +161,9 @@ export default function InvoiceClientPage({
               >
                 Paid
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
+              <DropdownMenuItem className="cursor-pointer"
+              onClick={()=>handleSendEmail(invoiceId, `Invoice from ${row.original.from.name}`)}
+              >
                 Send Email
               </DropdownMenuItem>
             </DropdownMenuContent>
