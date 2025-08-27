@@ -68,24 +68,27 @@ export default function InvoiceClientPage({
   }, [page]);
 
   // send email
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSendEmail = async (invoiceId: string, subject: string) => {
-    try {
-      toast.loading("Please wait...");
-      const response = await fetch(`/api/email${invoiceId}`, {
-        method: "post",
-        body: JSON.stringify({
-          subject: subject,
-        }),
-      });
-      const responseData = await response.json();
-      if (response.status === 200) {
-        toast.success(responseData.message);
-      }
-    } catch (error) {
-      console.log("error :>> ", error);
-    } finally {
-      toast.dismiss();
-    }
+    // fix it after bought a domain
+    toast.error("This features is not available for domain issues");
+    // try {
+    //   toast.loading("Please wait...");
+    //   const response = await fetch(`/api/email${invoiceId}`, {
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       subject: subject,
+    //     }),
+    //   });
+    //   const responseData = await response.json();
+    //   if (response.status === 200) {
+    //     toast.success(responseData.message);
+    //   }
+    // } catch (error) {
+    //   console.log("error :>> ", error);
+    // } finally {
+    //   toast.dismiss();
+    // }
   };
 
   // column config
@@ -161,8 +164,14 @@ export default function InvoiceClientPage({
               >
                 Paid
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer"
-              onClick={()=>handleSendEmail(invoiceId, `Invoice from ${row.original.from.name}`)}
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() =>
+                  handleSendEmail(
+                    invoiceId,
+                    `Invoice from ${row.original.from.name}`
+                  )
+                }
               >
                 Send Email
               </DropdownMenuItem>
