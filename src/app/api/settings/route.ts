@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
       message: "Settings update successfully",
       data: createSettings,
     });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return NextResponse.json(
       {
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
 }
 
 // get
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const session = await auth();
     if (!session) {
@@ -79,6 +80,7 @@ export async function GET(req: NextRequest) {
       message: "Success",
       data: getData,
     });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return NextResponse.json({
       message: error?.message || error || "something went wrong",
