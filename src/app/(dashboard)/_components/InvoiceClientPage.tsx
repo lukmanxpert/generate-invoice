@@ -71,7 +71,7 @@ export default function InvoiceClientPage({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSendEmail = async (invoiceId: string, subject: string) => {
     // fix it after bought a domain
-    toast.error("This features is not available for domain issues");
+    toast.error("This features is not available due to domain issues");
     // try {
     //   toast.loading("Please wait...");
     //   const response = await fetch(`/api/email${invoiceId}`, {

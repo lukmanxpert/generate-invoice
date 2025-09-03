@@ -15,12 +15,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-export default function DashboardSidebar({children}: {children: React.ReactNode}) {
+export default function DashboardSidebar({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   return (
     <Sidebar>
       <SidebarHeader className="p-4">
-        <Logo />
+        <Link href={"/dashboard"}>
+          <Logo />
+        </Link>
       </SidebarHeader>
       <SidebarContent className="p-2">
         <SidebarMenu>

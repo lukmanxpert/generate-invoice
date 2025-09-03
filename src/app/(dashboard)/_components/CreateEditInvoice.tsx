@@ -119,7 +119,7 @@ export default function CreateEditInvoice({
   }, [JSON.stringify(items), setValue]);
 
   // add new item row
-  const handleAddNewItemRow = (e: Event) => {
+  const handleAddNewItemRow = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     append({
       item_name: "",
@@ -164,7 +164,7 @@ export default function CreateEditInvoice({
       });
       if (response.status === 200) {
         toast.success("Invoice updated successfully");
-        router.push("/invoice")
+        router.push("/invoice");
       } else {
         toast.error("Something went wrong");
       }
@@ -553,7 +553,7 @@ export default function CreateEditInvoice({
           className="w-fit cursor-pointer"
           type="button"
           disabled={isLoading}
-          onClick={() => handleAddNewItemRow}
+          onClick={handleAddNewItemRow}
         >
           Add Item
         </Button>
@@ -641,7 +641,11 @@ export default function CreateEditInvoice({
         />
       </div>
       <Button disabled={isLoading} className="cursor-pointer" size={"lg"}>
-        {isLoading ? "Please wait..." : invoiceId ? "Update Invoice" : "Create Invoice"}
+        {isLoading
+          ? "Please wait..."
+          : invoiceId
+          ? "Update Invoice"
+          : "Create Invoice"}
       </Button>
     </form>
   );
