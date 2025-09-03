@@ -5,10 +5,10 @@ import { ChartConfig } from "@/components/ui/chart";
 import { IInvoice } from "@/models/invoice.model";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Badge } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ChartInvoice } from "../_components/ChartInvoice";
 import { DataTable } from "@/components/ui/DataTable";
+import { Badge } from "@/components/ui/badge";
 
 const chartConfig = {
   visitors: {
@@ -59,6 +59,38 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
+   const columns: ColumnDef<IInvoice>[] = [
+    {
+      accessorKey: "invoice_no",
+      header: "Invoice No",
+    },
+    {
+      accessorKey: "invoice_date",
+      header: "Date",
+      cell: ({ row }) => {
+        return format(row.original.invoice_date, "PP");
+      },
+    }, 
+    { 
+      accessorKey: "total",
+      header: "Amount",
+      cell: ({ row }) => {
+        const totalAmountInCurrencyFormat = new Intl.NumberFormat("en-us", {
+          style: "currency",
+          currency: row.original.currency,
+        }).format(row.original.total);
+
+        return totalAmountInCurrencyFormat;
+      },
+    },
+    {
+       accessorKey : "status",
+       header : "Status",
+       cell : ({row})=>{
+        return <Badge>{row.original.status}</Badge>
+       }
+    },
+  ];
   return (
     <div className="p-4 grid gap-6  lg:grid-cols-4">
       <Card className="grid gap-3">
@@ -113,7 +145,24 @@ export default function DashboardPage() {
       <ChartInvoice chartConfig={chartConfig} chartData={data.chartData} />
 
       {/***latest 10 Invoice last 30days */}
-      
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>Recent Invoice</CardTitle>
+        </CardHeader>
+        <CardContent>
+            {
+                data?.recentInvoice?.length == 0 ? (
+                    <p className="py-4 text-center">No invoice found</p>
+                ) : (
+                    <DataTable
+                        data={data?.recentInvoice}
+                        columns={columns}
+                    />
+                )
+            }
+
+        </CardContent>
+      </Card>
     </div>
   );
 }
