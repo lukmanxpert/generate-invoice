@@ -55,8 +55,8 @@ export default function UserProfileEdit({
       if (response.status === 200) {
         router.refresh();
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.log("error :>> ", error);
     } finally {
       setLoading(false);
     }

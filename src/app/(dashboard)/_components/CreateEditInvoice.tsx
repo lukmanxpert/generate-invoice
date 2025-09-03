@@ -168,8 +168,8 @@ export default function CreateEditInvoice({
       } else {
         toast.error("Something went wrong");
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.log("error :>> ", error);
     } finally {
       setIsLoading(true);
     }

@@ -54,9 +54,9 @@ export default function InvoiceClientPage({
       } else {
         toast.error("Something went wrong!");
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Something went wrong!");
-      console.log("error :>> ", error);
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,6 @@ export default function InvoiceClientPage({
     //     toast.success(responseData.message);
     //   }
     // } catch (error) {
-    //   console.log("error :>> ", error);
     // } finally {
     //   toast.dismiss();
     // }

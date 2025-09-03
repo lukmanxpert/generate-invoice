@@ -38,8 +38,6 @@ export default function DashboardPage() {
     try {
       const response = await fetch("/api/dashboard");
       const responseData = await response.json();
-
-      console.log("responseData",responseData)
       if (response.status === 200) {
         setData({
           totalRevenue: responseData.totalRevenue,
@@ -50,16 +48,15 @@ export default function DashboardPage() {
           chartData: responseData.chartData || [],
         });
       }
-    } catch (error) {
-      console.log(error);
-    }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {}
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
-   const columns: ColumnDef<IInvoice>[] = [
+  const columns: ColumnDef<IInvoice>[] = [
     {
       accessorKey: "invoice_no",
       header: "Invoice No",
@@ -70,8 +67,8 @@ export default function DashboardPage() {
       cell: ({ row }) => {
         return format(row.original.invoice_date, "PP");
       },
-    }, 
-    { 
+    },
+    {
       accessorKey: "total",
       header: "Amount",
       cell: ({ row }) => {
@@ -84,11 +81,11 @@ export default function DashboardPage() {
       },
     },
     {
-       accessorKey : "status",
-       header : "Status",
-       cell : ({row})=>{
-        return <Badge>{row.original.status}</Badge>
-       }
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        return <Badge>{row.original.status}</Badge>;
+      },
     },
   ];
   return (
@@ -150,17 +147,11 @@ export default function DashboardPage() {
           <CardTitle>Recent Invoice</CardTitle>
         </CardHeader>
         <CardContent>
-            {
-                data?.recentInvoice?.length == 0 ? (
-                    <p className="py-4 text-center">No invoice found</p>
-                ) : (
-                    <DataTable
-                        data={data?.recentInvoice}
-                        columns={columns}
-                    />
-                )
-            }
-
+          {data?.recentInvoice?.length == 0 ? (
+            <p className="py-4 text-center">No invoice found</p>
+          ) : (
+            <DataTable data={data?.recentInvoice} columns={columns} />
+          )}
         </CardContent>
       </Card>
     </div>

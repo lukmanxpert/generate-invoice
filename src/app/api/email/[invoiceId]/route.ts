@@ -59,7 +59,6 @@ export async function POST(
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.log('error :>> ', error);
     return NextResponse.json(
       {
         message: error.message || error || "Something went wrong",

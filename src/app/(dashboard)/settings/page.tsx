@@ -83,9 +83,8 @@ export default function SettingsPage() {
           responseData?.data?.signature || { name: "", image: "" }
         );
       }
-    } catch (error) {
-      console.log("error :>> ", error);
-    }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -94,6 +93,7 @@ export default function SettingsPage() {
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any
   ) => {
     e.preventDefault();
@@ -107,9 +107,9 @@ export default function SettingsPage() {
         toast.success("Settings updated successfully");
         fetchData();
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Something went wrong");
-      console.log("error :>> ", error);
     } finally {
       setIsLoading(false);
     }

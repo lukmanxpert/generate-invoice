@@ -48,8 +48,8 @@ export default function OnboardingPage() {
       if (response.status === 200) {
         return router.push("/dashboard");
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.log("error :>> ", error);
     } finally {
       setLoading(false);
     }

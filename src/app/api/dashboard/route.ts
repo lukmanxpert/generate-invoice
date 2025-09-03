@@ -44,8 +44,6 @@ export async function GET() {
         paidRevenue: item.status === "PAID" ? item.total : 0,
       };
     });
-    // console.log("dashboard api")
-    // console.log("data",data)
     return NextResponse.json({
       message: "Success",
       totalRevenue: `${
@@ -60,7 +58,6 @@ export async function GET() {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.log(error);
     return NextResponse.json(
       {
         message: error || error.message || "Something went wrong",
