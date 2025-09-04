@@ -32,10 +32,10 @@ Users can create invoices, send them to clients, and track payments via an inter
 ## 🖼️ Screenshots
 
 ### Invoice Example
-![Invoice Example](./public/screenshots/invoice.png)
+![Invoice Example](https://i.ibb.co/4nz1Ry8k/invoice-generate-invoice.png)
 
 ### Dashboard
-![Dashboard](./public/screenshots/dashboard.png)
+![Dashboard](https://i.ibb.co/XfTp766j/dashboard-invoice-generate.png)
 
 ---
 
