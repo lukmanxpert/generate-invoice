@@ -54,7 +54,7 @@ export default function InvoiceClientPage({
       } else {
         toast.error("Something went wrong!");
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Something went wrong!");
     } finally {
@@ -68,26 +68,28 @@ export default function InvoiceClientPage({
   }, [page]);
 
   // send email
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSendEmail = async (invoiceId: string, subject: string) => {
     // fix it after bought a domain
-    toast.error("This features is not available due to domain issues");
-    // try {
-    //   toast.loading("Please wait...");
-    //   const response = await fetch(`/api/email${invoiceId}`, {
-    //     method: "post",
-    //     body: JSON.stringify({
-    //       subject: subject,
-    //     }),
-    //   });
-    //   const responseData = await response.json();
-    //   if (response.status === 200) {
-    //     toast.success(responseData.message);
-    //   }
-    // } catch (error) {
-    // } finally {
-    //   toast.dismiss();
-    // }
+    // toast.error("This features is not available due to domain issues");
+    try {
+      toast.loading("Please wait...");
+      const response = await fetch(`/api/email/${invoiceId}`, {
+        method: "post",
+        body: JSON.stringify({
+          subject: subject,
+        }),
+      });
+      const responseData = await response.json();
+      if (response.status === 200) {
+        toast.success(responseData.message);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+    } finally {
+      setTimeout(() => {
+        toast.dismiss();
+      }, 1000);
+    }
   };
 
   // column config
