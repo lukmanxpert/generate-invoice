@@ -17,7 +17,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: MongoDBAdapter(client),
   providers: [
     Resend({
-      from: "Generate Invoice <onboarding@resend.dev>",
+      from: "Generate Invoice <noreply@lukmanxpert.site>",
     }),
   ],
   pages: {
