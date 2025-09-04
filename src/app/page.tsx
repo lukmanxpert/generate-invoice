@@ -36,7 +36,7 @@ export default function Home() {
 
       <footer className="bg-primary text-white flex justify-center items-center py-8">
         <p className="font-semibold text-lg flex items-center gap-2">
-          Developed with <FaHeart color="red" /> <Link href={"https://www.linkedin.com/in/lukmanxpert/"} target="_blank" className="italic hover:underline cursor-pointer">Sheikh Lukman</Link>
+          Developed with <FaHeart color="red" /> by <Link href={"https://www.linkedin.com/in/lukmanxpert/"} target="_blank" className="italic hover:underline cursor-pointer">Sheikh Lukman</Link>
         </p>
       </footer>
     </>
