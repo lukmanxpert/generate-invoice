@@ -89,71 +89,90 @@ export default function DashboardPage() {
     },
   ];
   return (
-    <div className="p-4 grid gap-6  lg:grid-cols-4">
-      <Card className="grid gap-3">
-        <CardHeader>
-          <CardTitle className="text-xl">Total Revenue</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div>
-            <p className="text-lg">{data?.totalRevenue ?? "-"}</p>
-            <span className="text-muted-foreground text-xs">last 30 days</span>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="p-4 space-y-6">
+      {/* First 4 cards */}
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="w-full flex flex-col gap-3">
+          <CardHeader>
+            <CardTitle className="text-xl">Total Revenue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div>
+              <p className="text-lg">{data?.totalRevenue ?? "-"}</p>
+              <span className="text-muted-foreground text-xs">
+                last 30 days
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
-      <Card className="grid gap-3">
-        <CardHeader>
-          <CardTitle className="text-xl">Total Invoice</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div>
-            <p className="text-lg">{data?.totalInvoice ?? "-"}</p>
-            <span className="text-muted-foreground text-xs">last 30 days</span>
-          </div>
-        </CardContent>
-      </Card>
+        <Card className="w-full flex flex-col gap-3">
+          <CardHeader>
+            <CardTitle className="text-xl">Total Invoice</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div>
+              <p className="text-lg">{data?.totalInvoice ?? "-"}</p>
+              <span className="text-muted-foreground text-xs">
+                last 30 days
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
-      <Card className="grid gap-3">
-        <CardHeader>
-          <CardTitle className="text-xl">Paid Invoice</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div>
-            <p className="text-lg">{data?.paidInvoice ?? "-"}</p>
-            <span className="text-muted-foreground text-xs">last 30 days</span>
-          </div>
-        </CardContent>
-      </Card>
+        <Card className="w-full flex flex-col gap-3">
+          <CardHeader>
+            <CardTitle className="text-xl">Paid Invoice</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div>
+              <p className="text-lg">{data?.paidInvoice ?? "-"}</p>
+              <span className="text-muted-foreground text-xs">
+                last 30 days
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
-      <Card className="grid gap-3">
-        <CardHeader>
-          <CardTitle className="text-xl">Unpaid Invoice</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div>
-            <p className="text-lg">{data?.UnpaidInvoice ?? "-"}</p>
-            <span className="text-muted-foreground text-xs">last 30 days</span>
-          </div>
-        </CardContent>
-      </Card>
+        <Card className="w-full flex flex-col gap-3">
+          <CardHeader>
+            <CardTitle className="text-xl">Unpaid Invoice</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div>
+              <p className="text-lg">{data?.UnpaidInvoice ?? "-"}</p>
+              <span className="text-muted-foreground text-xs">
+                last 30 days
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-      {/***chart */}
-      <ChartInvoice chartConfig={chartConfig} chartData={data.chartData} />
+      {/* Chart + Recent Invoice in 2 cols on md+ */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="w-full">
+          <CardContent>
+            <ChartInvoice
+              chartConfig={chartConfig}
+              chartData={data.chartData}
+            />
+          </CardContent>
+        </div>
 
-      {/***latest 10 Invoice last 30days */}
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle>Recent Invoice</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {data?.recentInvoice?.length == 0 ? (
-            <p className="py-4 text-center">No invoice found</p>
-          ) : (
-            <DataTable data={data?.recentInvoice} columns={columns} />
-          )}
-        </CardContent>
-      </Card>
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Recent Invoice</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {data?.recentInvoice?.length == 0 ? (
+              <p className="py-4 text-center">No invoice found</p>
+            ) : (
+              <DataTable data={data?.recentInvoice} columns={columns} />
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
