@@ -80,6 +80,13 @@ export default function InvoiceClientPage({
         }),
       });
       const responseData = await response.json();
+
+      if (response.status === 400) {
+        return toast.error(responseData.message, {
+          position: "top-center"
+        });
+      }
+
       if (response.status === 200) {
         toast.success(responseData.message);
       }
@@ -88,7 +95,7 @@ export default function InvoiceClientPage({
     } finally {
       setTimeout(() => {
         toast.dismiss();
-      }, 1000);
+      }, 2000);
     }
   };
 

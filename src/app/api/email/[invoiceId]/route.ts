@@ -4,6 +4,7 @@ import { connectDB } from "@/lib/connectDB";
 import { sendEmail } from "@/lib/email.config";
 import { currencyOptions, TCurrencyKey } from "@/lib/utils";
 import invoiceModel, { IInvoice } from "@/models/invoice.model";
+import settingsModel, { ISettings } from "@/models/Settings.model";
 import { format } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -27,6 +28,21 @@ export async function POST(
     const { subject } = await req.json();
 
     await connectDB();
+
+    const settings: ISettings | null = await settingsModel.findOne({
+      userId: session.user.id,
+    });
+
+    if (!settings) {
+      return NextResponse.json(
+        {
+          message: "Please add logo and signature in settings",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     const invoiceData: IInvoice | null = await invoiceModel.findById(invoiceId);
 
